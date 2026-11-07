@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>livekit 部署</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+            background-color: #ffffff;
+        }
+
+        .container {
+            width: 1080px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 40px 20px;
+            box-sizing: border-box;
+        }
+
+        .main-title {
+            text-align: center;
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .section img {
+            width: 100%;
+            height: auto;
+            margin: 15px 0;
+        }
+
+        .section p {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #333;
+        }
+		.impt{
+		     display:inline;
+			color: #f00;
+			font: 7;
+		}
+    </style>
+</head>
+<body>
+<div style = "width:1080px;margin:0 auto;padding:50px;background:#cfff9c">
+
+    <div class="section">
+        <div class="section-title">一.服务器信息</div>
+        <p>
+            1.1.服务器地址：<span class="impt">160.251.183.30</span>
+        </p>
+
+		<p>
+            1.2.系统用户：<br/>
+			&nbsp;&nbsp;&nbsp;&nbsp;用户：Root
+			&nbsp;&nbsp;&nbsp;&nbsp;密码：Root51392@
+			&nbsp;&nbsp;&nbsp;&nbsp;SSH端口：22
+        </p>
+
+		<p>
+             1.3.域名/DNS
+		</p>
+		<ul style="display:inline-block;">		
+			<li>rtc.shenxun.net // livekit     </li>
+			<li>turn.shenxun.net // turn    </li>
+			<li>www.shenxun.net // 其他 </li>
+		</ul>
+		<br/>
+				<img src="img1.png" style="width:500px;display:inline-block" alt="示例图片"><br/>
+    </div>
+			<hr/> 
+	<div class="section">
+        <div class="section-title">二.LiveKit 服务使用说明</div>
+    <header style="padding:28px; background:#174657; color:#ffffff; border-radius:12px;">
+      <h1 style="margin:0 0 8px; font-size:28px;"></h1>
+      <p style="margin:0; color:#d1e5eb;">服务启停 · 网页入口 · App 接入 · 后端管理 API</p>
+    </header>
+
+    <section style="margin-top:20px; padding:24px; background:#ffffff; border:1px solid #dde5e9; border-radius:12px;">
+      <h2 style="margin:0 0 16px; font-size:22px;">1.LiveKit 服务启动与停止</h2>
+
+      <p style="margin:0 0 12px;">
+        在部署目录执行，管理该 Compose 项目中的 LiveKit、Caddy 和 Redis。
+      </p>
+
+      <h3 style="margin:16px 0 8px; font-size:17px;">启动服务</h3>
+      <pre style="margin:0; padding:16px; background:#172f3b; color:#e4f1f5; border-radius:8px; white-space:pre-wrap; overflow-wrap:anywhere;"><code>cd /opt/livekit
+docker compose up -d</code></pre>
+
+      <h3 style="margin:16px 0 8px; font-size:17px;">停止服务</h3>
+      <pre style="margin:0; padding:16px; background:#172f3b; color:#e4f1f5; border-radius:8px; white-space:pre-wrap; overflow-wrap:anywhere;"><code>cd /opt/livekit
+docker compose stop</code></pre>
+
+      <p style="margin:16px 0 0; padding:12px 16px; background:#fff5e5; border-left:4px solid #d69b36; border-radius:4px;">
+        停止这一组服务会同时停止 Caddy，会议网页的公网入口也会暂时不可访问。
+        停止命令保留容器和持久数据。
+      </p>
+    </section>
+
+    <section style="margin-top:20px; padding:24px; background:#ffffff; border:1px solid #dde5e9; border-radius:12px;">
+      <h2 style="margin:0 0 16px; font-size:22px;">2.Meet 网页启动与停止</h2>
+
+      <p style="margin:0 0 12px;">
+        下面通过已有容器名称操作，不需要进入 Meet 项目目录。
+      </p>
+
+      <h3 style="margin:16px 0 8px; font-size:17px;">启动网页容器</h3>
+      <pre style="margin:0; padding:16px; background:#172f3b; color:#e4f1f5; border-radius:8px; white-space:pre-wrap;"><code>docker start meet-meet-1</code></pre>
+
+      <h3 style="margin:16px 0 8px; font-size:17px;">停止网页容器</h3>
+      <pre style="margin:0; padding:16px; background:#172f3b; color:#e4f1f5; border-radius:8px; white-space:pre-wrap;"><code>docker stop meet-meet-1</code></pre>
+
+      <h3 style="margin:16px 0 8px; font-size:17px;">查看全部容器状态</h3>
+      <pre style="margin:0; padding:16px; background:#172f3b; color:#e4f1f5; border-radius:8px; white-space:pre-wrap;"><code>docker ps -a</code></pre>
+
+      <p style="margin:12px 0 0; color:#607480; font-size:14px;">
+        docker start 适用于已存在的容器；容器被删除后，需要在实际 Meet 项目目录使用 Docker Compose 重新创建。
+      </p>
+    </section>
+
+    <section style="margin-top:20px; padding:24px; background:#ffffff; border:1px solid #dde5e9; border-radius:12px;">
+      <h2 style="margin:0 0 16px; font-size:22px;">3.网页入口与域名作用</h2>
+
+      <a href="https://meet.shenxun.net"
+         target="_blank"
+         rel="noopener noreferrer"
+         style="display:inline-block; padding:10px 20px; background:#16768a; color:#ffffff; text-decoration:none; border-radius:7px;">
+        打开会议首页
+      </a>
+
+      <div style="margin-top:18px; overflow-x:auto;">
+        <table style="width:100%; min-width:560px; border-collapse:collapse; text-align:left;">
+          <thead>
+            <tr style="background:#edf3f6;">
+              <th style="padding:12px; border:1px solid #dde5e9;">地址</th>
+              <th style="padding:12px; border:1px solid #dde5e9;">用途</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding:12px; border:1px solid #dde5e9;">
+                <a href="https://meet.shenxun.net" style="color:#16768a;">https://meet.shenxun.net</a>
+              </td>
+              <td style="padding:12px; border:1px solid #dde5e9;">会议网页，供浏览器参会。</td>
+            </tr>
+            <tr>
+              <td style="padding:12px; border:1px solid #dde5e9;">rtc.shenxun.net</td>
+              <td style="padding:12px; border:1px solid #dde5e9;">LiveKit 信令连接与后端管理 API。</td>
+            </tr>
+            <tr>
+              <td style="padding:12px; border:1px solid #dde5e9;">turn.shenxun.net</td>
+              <td style="padding:12px; border:1px solid #dde5e9;">受限网络中的音视频中继，由客户端自动使用。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p style="margin:16px 0 0;">
+        <strong>邀请参会：</strong>在会议网页创建会议后，复制页面生成的完整邀请链接，发送给其他参会者。
+      </p>
+    </section>
+
+    <section style="margin-top:20px; padding:24px; background:#ffffff; border:1px solid #dde5e9; border-radius:12px;">
+      <h2 style="margin:0 0 16px; font-size:22px;">4、App 接入 LiveKit</h2>
+
+      <p style="margin:0 0 12px;">
+        App 通过 LiveKit 客户端 SDK 连接，使用以下服务器地址及参与者 Token：
+      </p>
+
+      <pre style="margin:0; padding:16px; background:#172f3b; color:#e4f1f5; border-radius:8px; white-space:pre-wrap; overflow-wrap:anywhere;"><code>服务器地址：wss://rtc.shenxun.net
+认证凭据：参与者 JWT Token</code></pre>
+      <h2 style="margin:0 0 16px; font-size:22px; color:red">** 服务接入凭证----------------------------------------------------------------------------------------------</h2>
+
+      <pre style="margin:0; padding:16px; background:#172f3b; color:#e4f1f5; border-radius:8px; white-space:pre-wrap; overflow-wrap:anywhere;"><code>服务器地址：wss://rtc.shenxun.net
+<br/>
+API Key: APIhQsmbNsN6M3Y<br/>
+API Secret: H5bhT09b1Q4jeuBHG6eUgaPHa4fzp7z5CqqwgXphf21D<br/>
+	token:	eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJBUEloUXNtYk5zTjZNM1kiLCJzdWIiOiJ0ZXN0LXVzZXIiLCJleHAiOjE4Mjg4MjM0NzMsIm5iZiI6MTc5MjgyMzQ3MywiaWF0IjoxNzkyODIzNDczLCJpZGVudGl0eSI6InRlc3QtdXNlciIsIm5hbWUiOiJUZXN0IFVzZXIiLCJ2aWRlbyI6eyJyb29tSm9pbiI6dHJ1ZSwicm9vbSI6Im15LWZpcnN0LXJvb20ifX0.UjIdknaRJz3wAcA0l2P74UXAudtiWBhwAMYflT7NJo4
+		</code></pre>
+
+      <ol style="margin:16px 0 0; padding-left:24px;">
+        <li style="margin-bottom:8px;">App 向业务后端申请加入会议。</li>
+        <li style="margin-bottom:8px;">后端检查用户权限，签发绑定房间和参与者身份的 JWT。</li>
+        <li style="margin-bottom:8px;">App 使用服务器地址和 JWT，通过 LiveKit SDK 加入房间。</li>
+      </ol>
+
+      <p style="margin:16px 0 0; padding:12px 16px; background:#edf7fa; border-left:4px solid #16768a; border-radius:4px;">
+        <strong>业务 Token API 尚未确定：</strong>
+        后续由 Spring Boot 提供。当前不能把会议网页地址当成 App 的 Token 接口。
+      </p>
+
+      <p style="margin:12px 0 0; color:#a34b30;">
+        API Secret 只保存在服务端，不得写入 App、HTML 或公开代码仓库。
+      </p>
+    </section>
+
+    <section style="margin-top:20px; padding:24px; background:#ffffff; border:1px solid #dde5e9; border-radius:12px;">
+      <h2 style="margin:0 0 16px; font-size:22px;">5、后端管理 API</h2>
+
+      <p style="margin:0 0 12px;">
+        供可信后端管理会议，使用 HTTP POST 请求：
+      </p>
+
+      <pre style="margin:0; padding:16px; background:#172f3b; color:#e4f1f5; border-radius:8px; white-space:pre-wrap; overflow-wrap:anywhere;"><code>POST https://rtc.shenxun.net/twirp/livekit.RoomService/方法名
+
+Authorization: Bearer &lt;具备对应权限的管理JWT&gt;
+Content-Type: application/json</code></pre>
+
+
+
+      <div style="margin-top:18px; overflow-x:auto;">
+        <table style="width:100%; min-width:560px; border-collapse:collapse; text-align:left;">
+          <thead>
+            <tr style="background:#edf3f6;">
+              <th style="padding:12px; border:1px solid #dde5e9;">方法名</th>
+              <th style="padding:12px; border:1px solid #dde5e9;">用途</th>
+              <th style="padding:12px; border:1px solid #dde5e9;">请求体示例</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding:12px; border:1px solid #dde5e9;">CreateRoom</td>
+              <td style="padding:12px; border:1px solid #dde5e9;">创建房间</td>
+              <td style="padding:12px; border:1px solid #dde5e9;"><code>{"name":"study-room"}</code></td>
+            </tr>
+            <tr>
+              <td style="padding:12px; border:1px solid #dde5e9;">ListRooms</td>
+              <td style="padding:12px; border:1px solid #dde5e9;">查询活跃房间</td>
+              <td style="padding:12px; border:1px solid #dde5e9;"><code>{}</code></td>
+            </tr>
+            <tr>
+              <td style="padding:12px; border:1px solid #dde5e9;">ListParticipants</td>
+              <td style="padding:12px; border:1px solid #dde5e9;">查询房间成员</td>
+              <td style="padding:12px; border:1px solid #dde5e9;"><code>{"room":"study-room"}</code></td>
+            </tr>
+            <tr>
+              <td style="padding:12px; border:1px solid #dde5e9;">RemoveParticipant</td>
+              <td style="padding:12px; border:1px solid #dde5e9;">移除指定成员</td>
+              <td style="padding:12px; border:1px solid #dde5e9;"><code>{"room":"study-room","identity":"user-001"}</code></td>
+            </tr>
+            <tr>
+              <td style="padding:12px; border:1px solid #dde5e9;">DeleteRoom</td>
+              <td style="padding:12px; border:1px solid #dde5e9;">结束房间，断开全部成员</td>
+              <td style="padding:12px; border:1px solid #dde5e9;"><code>{"room":"study-room"}</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p style="margin:16px 0 0; padding:12px 16px; background:#fff5e5; border-left:4px solid #d69b36; border-radius:4px;">
+        普通参会 Token 不一定具有管理权限。管理 JWT 必须按操作授予对应权限，
+        API Secret 本身不能直接作为 Bearer Token 使用。
+      </p>
+    </section>
+
+    <footer style="padding:24px 0; color:#71838d; text-align:center; font-size:14px;">
+      LiveKit 服务使用说明 · 更新日期：2026-10-24
+    </footer>
+    </div>
+	
+</div>
+</body>
+</html>
